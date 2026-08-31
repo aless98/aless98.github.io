@@ -176,6 +176,14 @@ section[id] {
   transform: none;
 }
 
+/* Escape hatch: set when IntersectionObserver proves unreliable, so a failure
+   to observe degrades to "no animation" rather than "blank page". */
+.js.reveal-off .reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .js .reveal {
     opacity: 1;

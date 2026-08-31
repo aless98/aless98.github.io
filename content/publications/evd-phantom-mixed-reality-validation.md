@@ -5,6 +5,7 @@ summary: "An anatomically faithful head phantom designed as a validation platfor
 tags: ["Phantom Validation", "Mixed Reality", "Neurosurgery", "Surgical Navigation"]
 authors: "Fabio Morelli, Alessandro Albanesi, Marco Schiariti, Paolo Ferroli, Alberto Redaelli"
 venue: "IC3DTH Congress, Vienna, 2025"
+kind: abstract
 pdfUrl: ""
 codeUrl: ""
 ---

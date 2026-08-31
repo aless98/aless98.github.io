@@ -5,6 +5,7 @@ summary: "A markerless mixed-reality system that automatically registers a pre-o
 tags: ["Mixed Reality", "Neurosurgery", "Surgical Navigation", "Registration"]
 authors: "Alessandro Albanesi, Marco Schiariti, Fabio Morelli, Martina Offi, Luca Mattioli, Edoardo Maria Barbieri, Marina Grisoli, Valentina Masini, Davide Milesi, Paolo Ferroli, Alberto Cesare Luigi Redaelli, Luca Massimi, Vito Stifano, Emiliano Votta"
 venue: "Computer Methods and Programs in Biomedicine, 2026"
+kind: journal
 pdfUrl: "https://doi.org/10.1016/j.cmpb.2026.109387"
 codeUrl: ""
 ---

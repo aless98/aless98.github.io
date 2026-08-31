@@ -45,6 +45,15 @@ const publications = defineCollection({
     tags: z.array(z.string()),
     authors: z.string(),
     venue: z.string(),
+    /**
+     * Publication tier. Kept explicit rather than inferred from the venue,
+     * because the distinction is what stops a non-archival abstract reading as
+     * a peer-reviewed paper -- which would devalue the whole list.
+     *  - journal          : peer-reviewed journal article
+     *  - conference-paper : peer-reviewed full paper in archival proceedings
+     *  - abstract         : conference abstract, poster or oral presentation
+     */
+    kind: z.enum(['journal', 'conference-paper', 'abstract']),
     pdfUrl: z.string().optional(),
     codeUrl: z.string().optional(),
     content: z.string(),

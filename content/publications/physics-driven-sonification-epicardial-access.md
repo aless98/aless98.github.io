@@ -5,6 +5,7 @@ summary: "A physics-driven sonification scheme that conveys needle-tissue intera
 tags: ["Sonification", "Surgical Navigation", "Human-Computer Interaction", "Cardiology"]
 authors: "Veronica Ruozzi, Sasan Matinfar, Pasquale Vergara, Alessandro Albanesi, Serena Dell'Aversana, Stefano Carugo, Gianluigi Buccoliero, Nassir Navab, Alberto Redaelli, Emiliano Votta"
 venue: "IEEE Access, 2026"
+kind: journal
 pdfUrl: "https://doi.org/10.1109/ACCESS.2026.3694997"
 codeUrl: ""
 ---

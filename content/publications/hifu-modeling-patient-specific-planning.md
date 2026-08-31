@@ -5,6 +5,7 @@ summary: "A computational model of high-intensity focused ultrasound ablation, v
 tags: ["Focused Ultrasound", "Simulation", "Treatment Planning", "Medical Imaging"]
 authors: "Fabio Morelli, Alessandro Albanesi, Alice Ivanaj, Silvia Buratti, Francesca Parrotta, Junling Fu, Selene Tognarelli, Arianna Menciassi, Elena De Momi, Alberto Redaelli"
 venue: "Scientific Reports, 2026"
+kind: journal
 pdfUrl: "https://doi.org/10.1038/s41598-026-55057-z"
 codeUrl: ""
 ---

@@ -5,6 +5,7 @@ summary: "Preliminary evaluation of the hologram-to-head registration algorithm 
 tags: ["Mixed Reality", "Registration", "Neurosurgery", "Computer Vision"]
 authors: "Alessandro Albanesi, Marco Schiariti, Paolo Ferroli, Vito Stifano, Luca Massimi, Alberto Cesare Luigi Redaelli, Emiliano Votta"
 venue: "International Conference on Extended Reality (XR Salento), Lecture Notes in Computer Science, 2024"
+kind: conference-paper
 pdfUrl: "https://doi.org/10.1007/978-3-031-71704-8_20"
 codeUrl: ""
 ---

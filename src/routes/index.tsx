@@ -61,6 +61,87 @@ const contactChannels = [
   },
 ] as const
 
+/** How each tier is labelled on the card, so no entry can be mistaken for
+ *  a higher tier than it belongs to. */
+const KIND_LABEL: Record<string, string> = {
+  journal: 'Journal article',
+  'conference-paper': 'Conference paper',
+  abstract: 'Abstract / presentation',
+}
+
+function PublicationEntry({
+  pub,
+}: {
+  pub: (typeof allPublications)[number]
+}) {
+  return (
+    /* Native <details>: expands without JS and before hydration. */
+    <details className="group border border-border rounded-xl bg-card">
+      <summary className="flex items-start gap-3 p-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+        <ChevronRight
+          size={18}
+          className="mt-1 shrink-0 text-muted-foreground transition-transform group-open:rotate-90"
+        />
+        <span className="min-w-0">
+          <span className="flex flex-wrap items-center gap-2 mb-1">
+            <Badge variant="outline" className="text-xs font-normal">
+              {KIND_LABEL[pub.kind]}
+            </Badge>
+            <span className="text-xs text-muted-foreground">
+              {new Date(pub.date).getFullYear()}
+            </span>
+          </span>
+          <span className="block font-medium leading-snug">{pub.title}</span>
+          <span className="block text-sm text-muted-foreground mt-1">
+            {pub.venue}
+          </span>
+        </span>
+      </summary>
+
+      <div className="px-5 pb-5 sm:pl-14 space-y-4">
+        <p className="text-sm text-muted-foreground">{pub.authors}</p>
+        <p className="leading-relaxed">{pub.summary}</p>
+        <div className="flex flex-wrap gap-2">
+          {pub.tags.map((tag) => (
+            <Badge key={tag} variant="secondary">
+              {tag}
+            </Badge>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-4">
+          {pub.pdfUrl && (
+            <a
+              href={pub.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-sm text-foreground hover:underline"
+            >
+              <FileText size={14} /> Paper
+            </a>
+          )}
+          {pub.codeUrl && (
+            <a
+              href={pub.codeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-sm text-foreground hover:underline"
+            >
+              <Github size={14} /> Code
+            </a>
+          )}
+          <Link
+            to="/publications/$slug"
+            params={{ slug: pub._meta.path }}
+            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Link2 size={14} /> Permalink
+          </Link>
+        </div>
+      </div>
+    </details>
+  )
+}
+
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <h2 className="font-serif text-3xl font-semibold tracking-tight mb-6">
@@ -75,9 +156,20 @@ function Home() {
   )
   const educations = [...allEducations].sort(byRecencyDesc)
   const jobs = [...allJobs].sort(byRecencyDesc)
-  const publications = [...allPublications].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  )
+  const byDateDesc = (a: { date: string }, b: { date: string }) =>
+    new Date(b.date).getTime() - new Date(a.date).getTime()
+  const journalArticles = allPublications
+    .filter((p) => p.kind === 'journal')
+    .sort(byDateDesc)
+  // Peer-reviewed conference papers rank above non-archival abstracts, so they
+  // are ordered by tier first and only then by date.
+  const conferenceWork = allPublications
+    .filter((p) => p.kind !== 'journal')
+    .sort(
+      (a, b) =>
+        (a.kind === 'conference-paper' ? 0 : 1) -
+          (b.kind === 'conference-paper' ? 0 : 1) || byDateDesc(a, b),
+    )
 
   const categories = useMemo(
     () => ['All', ...new Set(allProjects.map((p) => p.category))],
@@ -164,19 +256,29 @@ function Home() {
         </ul>
 
         <h3 className="font-serif text-xl font-semibold mb-4">Education</h3>
-        <ul className="max-w-3xl space-y-3 list-disc pl-5">
+        <ul className="max-w-3xl space-y-4">
           {educations.map((education) => (
-            <li key={education._meta.path}>
-              <span className="font-medium">
-                {education.degree}
-                {education.distinction ? ` (${education.distinction})` : ''}
+            <li key={education._meta.path} className="flex items-start gap-4">
+              {/* Icon replaces the list bullet, so it is decorative: the degree
+                  text alongside already carries the meaning. */}
+              <span
+                aria-hidden="true"
+                className="shrink-0 mt-0.5 w-9 h-9 rounded-lg bg-muted flex items-center justify-center text-muted-foreground"
+              >
+                <GraduationCap size={18} />
               </span>
-              <span className="text-muted-foreground">
-                , {formatYearRange(education.startDate, education.endDate)}
-              </span>
-              <br />
-              <span className="text-muted-foreground">
-                {education.institution}
+              <span className="min-w-0">
+                <span className="font-medium">
+                  {education.degree}
+                  {education.distinction ? ` (${education.distinction})` : ''}
+                </span>
+                <span className="text-muted-foreground">
+                  , {formatYearRange(education.startDate, education.endDate)}
+                </span>
+                <br />
+                <span className="text-muted-foreground">
+                  {education.institution}
+                </span>
               </span>
             </li>
           ))}
@@ -304,73 +406,29 @@ function Home() {
       <Reveal as="section" id="publications" className="pb-20">
         <SectionHeading>Publications</SectionHeading>
         <p className="text-muted-foreground mb-6">
-          Peer-reviewed papers on mixed reality, computer vision, and robotics
-          for image-guided surgery. Click an entry to expand it.
+          Work on mixed reality, computer vision, and robotics for image-guided
+          surgery, grouped by type. Click an entry to expand it.
         </p>
 
-        <div className="space-y-3">
-          {publications.map((pub) => (
-            /* Native <details>: expands without JS and before hydration. */
-            <details
-              key={pub._meta.path}
-              className="group border border-border rounded-xl bg-card"
-            >
-              <summary className="flex items-start gap-3 p-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                <ChevronRight
-                  size={18}
-                  className="mt-1 shrink-0 text-muted-foreground transition-transform group-open:rotate-90"
-                />
-                <span className="min-w-0">
-                  <span className="block font-medium leading-snug">
-                    {pub.title}
-                  </span>
-                  <span className="block text-sm text-muted-foreground mt-1">
-                    {pub.venue}
-                  </span>
-                </span>
-              </summary>
+        <h3 className="font-serif text-xl font-semibold mb-4">
+          Journal Articles
+        </h3>
+        <div className="space-y-3 mb-10">
+          {journalArticles.map((pub) => (
+            <PublicationEntry key={pub._meta.path} pub={pub} />
+          ))}
+        </div>
 
-              <div className="px-5 pb-5 sm:pl-14 space-y-4">
-                <p className="text-sm text-muted-foreground">{pub.authors}</p>
-                <p className="leading-relaxed">{pub.summary}</p>
-                <div className="flex flex-wrap gap-2">
-                  {pub.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-                <div className="flex flex-wrap gap-4">
-                  {pub.pdfUrl && (
-                    <a
-                      href={pub.pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm text-foreground hover:underline"
-                    >
-                      <FileText size={14} /> Paper
-                    </a>
-                  )}
-                  {pub.codeUrl && (
-                    <a
-                      href={pub.codeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm text-foreground hover:underline"
-                    >
-                      <Github size={14} /> Code
-                    </a>
-                  )}
-                  <Link
-                    to="/publications/$slug"
-                    params={{ slug: pub._meta.path }}
-                    className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    <Link2 size={14} /> Permalink
-                  </Link>
-                </div>
-              </div>
-            </details>
+        <h3 className="font-serif text-xl font-semibold mb-2">
+          Conference Papers &amp; Abstracts
+        </h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          Peer-reviewed conference papers, followed by conference abstracts,
+          posters and oral presentations.
+        </p>
+        <div className="space-y-3">
+          {conferenceWork.map((pub) => (
+            <PublicationEntry key={pub._meta.path} pub={pub} />
           ))}
         </div>
       </Reveal>

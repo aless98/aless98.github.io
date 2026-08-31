@@ -4,7 +4,8 @@ date: "2025-10-01"
 summary: "An augmented reality framework that lets an operator supervise and command a robot performing contact-rich medical tasks."
 tags: ["Augmented Reality", "Robotics", "Human-Robot Interaction"]
 authors: "Junling Fu, A. Karimi Dastjerdi, M. Di Mauro, Alessandro Albanesi, Alberto Redaelli, T. Scquizzato, et al."
-venue: "I-RIM Conference Proceedings, 2025"
+venue: "I-RIM Conference, 2025 — archived in the Politecnico di Milano IRIS repository"
+kind: abstract
 pdfUrl: ""
 codeUrl: ""
 ---

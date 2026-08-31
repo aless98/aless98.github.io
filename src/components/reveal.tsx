@@ -13,6 +13,9 @@ import { cn } from '@/lib/utils'
  * One-shot by design -- the observer disconnects after revealing, so nothing
  * re-animates when scrolling back up.
  */
+/** Set once any reveal observer fires, proving observers work in this page. */
+let revealProbeSettled = false
+
 export function Reveal({
   children,
   className,
@@ -43,8 +46,18 @@ export function Reveal({
       return
     }
 
+    // Already on screen at mount -- e.g. the landing section after following
+    // a `/#cv` style anchor. Reveal straight away rather than waiting a frame.
+    const rect = el.getBoundingClientRect()
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      revealProbeSettled = true
+      el.classList.add('is-visible')
+      return
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
+        revealProbeSettled = true
         if (!entry.isIntersecting) return
         el.classList.add('is-visible')
         observer.disconnect()
@@ -52,7 +65,21 @@ export function Reveal({
       { rootMargin: '0px 0px -8% 0px', threshold: 0.05 },
     )
     observer.observe(el)
-    return () => observer.disconnect()
+
+    // Safety net. Reveal is opt-out styling: if observer callbacks never
+    // arrive, every section stays at opacity 0 and the page reads as blank.
+    // Rather than trust that never happens, probe once and disable the reveal
+    // styling wholesale if the observer proves unreliable.
+    const probeTimer = window.setTimeout(() => {
+      if (!revealProbeSettled) {
+        document.documentElement.classList.add('reveal-off')
+      }
+    }, 1500)
+
+    return () => {
+      observer.disconnect()
+      window.clearTimeout(probeTimer)
+    }
   }, [])
 
   return (

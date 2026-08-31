@@ -34,12 +34,14 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Typecheck
-        run: pnpm run typecheck
-
+      # Must run before typecheck: the build generates src/routeTree.gen.ts and
+      # .content-collections/, both gitignored, which the types depend on.
       # Prerenders every route to static HTML into dist/client.
       - name: Build
         run: pnpm run build
+
+      - name: Typecheck
+        run: pnpm run typecheck
 
       - uses: actions/configure-pages@v5
 

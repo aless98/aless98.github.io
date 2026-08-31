@@ -89,6 +89,31 @@ those were real routes: `meta refresh` to the matching anchor, `noindex`, plus a
 pointing at the real URL. `public/projects/` holds both a stub and the project media;
 they coexist because the route HTML is `index.html`.
 
+## Theme, motion and the hero canvas
+
+`src/lib/theme.ts` exports `themeInitScript`, inlined in `<head>` by `__root.tsx`.
+It must stay inline and synchronous: it resolves the theme before first paint (so
+dark-mode visitors get no white flash) and adds a `js` class to `<html>`.
+
+That `js` class is load-bearing. The scroll-reveal styles in `src/styles.css` are
+written as `.js .reveal`, so **without JavaScript nothing is hidden** and the
+prerendered content stays visible. Never write an ungated `.reveal { opacity: 0 }`
+-- that would make the whole page invisible to anything that does not run JS,
+including the crawlers the prerendering exists to serve.
+
+`src/components/reveal.tsx` reveals once and disconnects. Sections skipped by a
+fast scroll or an anchor jump reveal when they are next scrolled into view.
+
+`src/components/hero-backdrop.tsx` draws a point cloud and a rigid marker
+constellation on a canvas. It pauses via IntersectionObserver when off-screen,
+draws a single static frame under `prefers-reduced-motion`, and re-reads the
+theme each frame so the toggle needs no remount.
+
+The hero's full-bleed wrapper needs `overflow-x-clip`: its child is `w-screen`,
+and `100vw` includes the scrollbar width, which otherwise adds a few pixels of
+horizontal page scroll. Use `clip`, not `hidden`, so it cannot become a scroll
+container and break the sticky header.
+
 ## Conventions
 
 - Routes are file-based under `src/routes/`; a folder with `index.tsx` + `$slug.tsx` maps to `/publications` and `/publications/$slug`.

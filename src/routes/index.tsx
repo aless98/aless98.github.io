@@ -26,6 +26,8 @@ import { SocialLinks } from '@/components/social-links'
 import { site } from '@/lib/site'
 import { byRecencyDesc, formatRange, formatYearRange } from '@/lib/dates'
 import { cn } from '@/lib/utils'
+import { HeroBackdrop } from '@/components/hero-backdrop'
+import { Reveal } from '@/components/reveal'
 
 export const Route = createFileRoute('/')({
   component: Home,
@@ -90,7 +92,16 @@ function Home() {
   return (
     <div className="max-w-5xl mx-auto px-4">
       {/* ---------------- Hero ---------------- */}
-      <section className="flex flex-col md:flex-row items-start gap-10 pt-16 pb-20">
+      {/* `overflow-x-clip` contains the full-bleed child below: 100vw includes
+          the scrollbar width, so without this the page gains a few pixels of
+          horizontal scroll. `clip` rather than `hidden` so it cannot create a
+          scroll container and interfere with the sticky header. */}
+      <div className="relative overflow-x-clip">
+        {/* Full-bleed: breaks out of the centred container on both sides. */}
+        <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-screen -z-10">
+          <HeroBackdrop />
+        </div>
+        <section className="relative flex flex-col md:flex-row items-start gap-10 pt-16 pb-20">
         <img
           src="/headshot-on-white.jpg"
           alt={`Portrait of ${site.name}`}
@@ -112,11 +123,12 @@ function Home() {
             <Download size={16} />
             Download CV (PDF)
           </a>
-        </div>
-      </section>
+          </div>
+        </section>
+      </div>
 
       {/* ---------------- About ---------------- */}
-      <section id="about" className="pb-20">
+      <Reveal as="section" id="about" className="pb-20">
         <SectionHeading>About</SectionHeading>
 
         <div className="max-w-3xl space-y-4 leading-relaxed mb-10">
@@ -169,10 +181,10 @@ function Home() {
             </li>
           ))}
         </ul>
-      </section>
+      </Reveal>
 
       {/* ---------------- News ---------------- */}
-      <section id="news" className="pb-20">
+      <Reveal as="section" id="news" className="pb-20">
         <SectionHeading>News</SectionHeading>
         <div className="space-y-4">
           {news.map((item) => (
@@ -189,10 +201,10 @@ function Home() {
             </Card>
           ))}
         </div>
-      </section>
+      </Reveal>
 
       {/* ---------------- Projects ---------------- */}
-      <section id="projects" className="pb-20">
+      <Reveal as="section" id="projects" className="pb-20">
         <SectionHeading>Projects</SectionHeading>
         <p className="text-muted-foreground mb-6">
           Extended reality, computer vision, and navigation systems for
@@ -286,10 +298,10 @@ function Home() {
             </Card>
           ))}
         </div>
-      </section>
+      </Reveal>
 
       {/* ---------------- Publications ---------------- */}
-      <section id="publications" className="pb-20">
+      <Reveal as="section" id="publications" className="pb-20">
         <SectionHeading>Publications</SectionHeading>
         <p className="text-muted-foreground mb-6">
           Peer-reviewed papers on mixed reality, computer vision, and robotics
@@ -361,10 +373,10 @@ function Home() {
             </details>
           ))}
         </div>
-      </section>
+      </Reveal>
 
       {/* ---------------- CV ---------------- */}
-      <section id="cv" className="pb-20">
+      <Reveal as="section" id="cv" className="pb-20">
         <SectionHeading>CV</SectionHeading>
         <a
           href={site.cvPath}
@@ -407,10 +419,10 @@ function Home() {
             </Card>
           ))}
         </div>
-      </section>
+      </Reveal>
 
       {/* ---------------- Contact ---------------- */}
-      <section id="contact" className="pb-24">
+      <Reveal as="section" id="contact" className="pb-24">
         <SectionHeading>Contact</SectionHeading>
         <p className="text-muted-foreground mb-6 max-w-2xl">
           For collaborations, research enquiries, or anything else, email is the
@@ -459,7 +471,7 @@ function Home() {
             <span>Milan, Italy</span>
           </p>
         </div>
-      </section>
+      </Reveal>
     </div>
   )
 }

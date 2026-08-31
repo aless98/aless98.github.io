@@ -3,6 +3,7 @@ import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import { Footer } from '@/components/footer'
 import { Nav } from '@/components/nav'
 import { site } from '@/lib/site'
+import { themeInitScript } from '@/lib/theme'
 import '../styles.css'
 
 const TITLE = `${site.name} — XR & Computer Vision for Neurosurgery`
@@ -85,6 +86,10 @@ export const Route = createRootRoute({
       { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
     ],
     scripts: [
+      // Must run before first paint: resolves the theme so dark-mode visitors
+      // never see a white flash, and flags the document as JS-capable, which
+      // is what enables the scroll-reveal styles.
+      { children: themeInitScript },
       {
         type: 'application/ld+json',
         children: JSON.stringify(personSchema),

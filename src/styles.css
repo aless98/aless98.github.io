@@ -157,3 +157,80 @@ html {
 section[id] {
   scroll-margin-top: 5rem;
 }
+
+/* ---------------- Scroll reveal ----------------
+   Gated on `.js`, added by the head script. Without JavaScript these rules
+   never apply, so the prerendered content stays visible rather than being
+   permanently transparent. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---------------- Card and control motion ---------------- */
+[data-slot='card'] {
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+/* Lift only cards that are themselves interactive, so static content does not
+   appear clickable. */
+a:hover > [data-slot='card'],
+details:hover > summary [data-slot='card'] {
+  transform: translateY(-3px);
+  box-shadow:
+    0 10px 24px -12px rgb(0 0 0 / 0.18),
+    0 2px 6px -2px rgb(0 0 0 / 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot='card'],
+  a:hover > [data-slot='card'] {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* Smooth the publication accordion's chevron and content. */
+details > summary {
+  transition: background-color 0.2s ease;
+  border-radius: inherit;
+}
+
+details > summary:hover {
+  background-color: var(--accent);
+}
+
+details[open] > summary {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* A consistent, visible focus ring for keyboard users across links, buttons
+   and the accordion summaries. */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+  border-radius: 0.375rem;
+}

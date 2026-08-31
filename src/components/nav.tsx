@@ -3,6 +3,7 @@ import { useLocation } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
 import { sections, site } from '@/lib/site'
 import { useActiveSection } from '@/lib/use-active-section'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 export function Nav() {
   const { pathname } = useLocation()
@@ -45,6 +46,7 @@ export function Nav() {
             )
           })}
         </nav>
+        <ThemeToggle />
       </div>
     </header>
   )

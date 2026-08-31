@@ -3,6 +3,7 @@ title: "Automatic Targeting for Deep Brain Stimulation"
 description: "A deep-learning pipeline that localises the subthalamic nucleus on MRI and automatically plans a safe electrode trajectory for deep brain stimulation in Parkinson's disease."
 category: "Medical Imaging"
 tags: ["Deep Learning", "MRI", "Path Planning", "Neurosurgery", "Parkinson's Disease"]
+image: "/projects/dbs-targeting.webp"
 github: ""
 ---
 

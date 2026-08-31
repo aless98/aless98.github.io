@@ -14,7 +14,8 @@ Identity and profile links live in `src/lib/site.ts`. The `content/jobs` and `co
 ## Project Structure
 
 - `content/` — markdown content: `jobs`, `education`, `publications`, `projects`, `news`
-- `src/routes/` — pages: home (`index.tsx`), CV (`cv.tsx`), publications, projects, contact
+- `src/routes/` — `index.tsx` is the whole single-page site (anchored sections);
+  `publications/$slug.tsx` renders per-paper permalink pages
 - `src/components/` — shared UI, including the site navigation (`nav.tsx`)
 
 See `AGENTS.md` for a more detailed architecture overview.

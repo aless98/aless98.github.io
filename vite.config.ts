@@ -27,15 +27,10 @@ const config = defineConfig({
         autoSubfolderIndex: true,
         retryCount: 1,
       },
-      // Entry points for the crawler. Anything reachable by a link from these
-      // is picked up automatically.
-      pages: [
-        { path: '/' },
-        { path: '/cv' },
-        { path: '/projects' },
-        { path: '/publications' },
-        { path: '/contact' },
-      ],
+      // The site is a single page; `/` is the only entry point. The nine
+      // publication permalinks are reached by the crawler via the "Permalink"
+      // links in the publications section, so they need no listing here.
+      pages: [{ path: '/' }],
     }),
     viteReact(),
   ],

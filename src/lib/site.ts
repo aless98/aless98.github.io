@@ -42,3 +42,19 @@ export const site = {
     orcid: 'https://orcid.org/0009-0007-3663-1882',
   },
 } as const
+
+/**
+ * The single-page sections, in page order. Each `id` is both the DOM id of the
+ * section and its URL hash, and the nav is generated from this list -- so
+ * adding a section here wires up the anchor, the nav link, and scroll-spy.
+ */
+export const sections = [
+  { id: 'about', label: 'About' },
+  { id: 'news', label: 'News' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'publications', label: 'Publications' },
+  { id: 'cv', label: 'CV' },
+  { id: 'contact', label: 'Contact' },
+] as const
+
+export type SectionId = (typeof sections)[number]['id']

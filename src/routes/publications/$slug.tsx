@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { allPublications } from 'content-collections'
 import { marked } from 'marked'
 import { Badge } from '@/components/ui/badge'
@@ -17,9 +17,9 @@ function PublicationPage() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Publication not found</h1>
-          <Link to="/publications" className="text-foreground hover:underline">
+          <a href="/#publications" className="text-foreground hover:underline">
             Back to publications
-          </Link>
+          </a>
         </div>
       </div>
     )
@@ -30,13 +30,13 @@ function PublicationPage() {
   return (
     <div>
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <Link
-          to="/publications"
+        <a
+          href="/#publications"
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8"
         >
           <ArrowLeft size={16} />
           Back to publications
-        </Link>
+        </a>
 
         <article>
           <header className="mb-8">

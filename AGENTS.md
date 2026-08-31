@@ -37,14 +37,10 @@ src/
     nav.tsx       # Site-wide navigation header, rendered from __root.tsx
     ui/           # Radix-based primitives: card, badge, checkbox, hover-card, separator
   routes/
-    __root.tsx        # Root layout: renders Nav + page content
-    index.tsx          # Home: bio + news feed
-    cv.tsx              # CV: work experience (content/jobs) + education (content/education)
-    projects.tsx        # Research projects gallery with category filter
+    __root.tsx        # Root layout: Nav + page content + Footer
+    index.tsx          # The whole site: one page of anchored sections
     publications/
-      index.tsx         # Publications list
-      $slug.tsx         # Publication detail page
-    contact.tsx         # Contact details (no form -- static hosting has no backend)
+      $slug.tsx         # Per-publication permalink page
 public/
   .nojekyll             # Stops GitHub Pages running Jekyll over the output
   404.html              # Static not-found page (inline CSS, no asset deps)
@@ -63,6 +59,35 @@ Each collection is defined in `content-collections.ts` and populated from markdo
 - `news` — title, date, content
 
 To add new content, drop a new markdown file into the relevant `content/*` directory following the existing frontmatter shape — no code changes needed.
+
+## Single-page structure
+
+The site is **one page** of anchored sections, not separate routes. `src/lib/site.ts`
+exports `sections`, an ordered list of `{ id, label }`; the nav is generated from it and
+each `id` is both the section's DOM id and its URL hash. Adding a section there wires up
+the anchor, the nav link, and scroll-spy together -- but you must also add the matching
+`<section id="...">` in `src/routes/index.tsx`.
+
+Nav links are plain `<a href="#id">`, deliberately not router `Link`s, so jumping works
+before hydration and with JavaScript disabled. Smooth scrolling and
+`section[id] { scroll-margin-top }` live in `src/styles.css`; the offset must stay in
+sync with the sticky header's height, which `useActiveSection` also hardcodes as
+`HEADER_HEIGHT`.
+
+Active-section highlighting uses `IntersectionObserver` (`src/lib/use-active-section.ts`),
+not scroll-offset arithmetic, because section heights vary. It also special-cases the
+bottom of the page: the last section is usually too short to enter the observer band and
+would otherwise never highlight.
+
+Publications expand in place using native `<details>`/`<summary>` rather than React
+state, so they open without JavaScript. Each one also links to a prerendered permalink
+page under `/publications/<slug>`, and those links are how the prerender crawler
+discovers those pages -- removing them would silently stop the detail pages being built.
+
+`public/{cv,projects,publications,contact}/index.html` are redirect stubs left from when
+those were real routes: `meta refresh` to the matching anchor, `noindex`, plus a canonical
+pointing at the real URL. `public/projects/` holds both a stub and the project media;
+they coexist because the route HTML is `index.html`.
 
 ## Conventions
 

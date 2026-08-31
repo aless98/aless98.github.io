@@ -140,3 +140,20 @@ code {
     @apply bg-background text-foreground;
   }
 }
+
+/* Single-page anchor navigation. */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Respect users who ask for less motion: jump instead of animating. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Keep section headings clear of the sticky header when jumped to. */
+section[id] {
+  scroll-margin-top: 5rem;
+}

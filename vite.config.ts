@@ -26,6 +26,12 @@ const config = defineConfig({
         // resolves extensionless URLs like `/projects` without a redirect.
         autoSubfolderIndex: true,
         retryCount: 1,
+        // The crawler follows every link, including the in-page anchors and the
+        // CV download. Those are not separate documents: prerendering them is
+        // wasted work, and listing them in the sitemap tells search engines the
+        // single page is seven duplicates.
+        filter: ({ path }: { path: string }) =>
+          !path.includes('#') && !path.includes('.pdf'),
       },
       // The site is a single page; `/` is the only entry point. The nine
       // publication permalinks are reached by the crawler via the "Permalink"

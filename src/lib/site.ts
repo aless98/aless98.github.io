@@ -4,6 +4,9 @@
  */
 export const site = {
   name: 'Alessandro Albanesi',
+  /** Canonical origin. Used for canonical URLs, Open Graph and JSON-LD. */
+  url: 'https://aless98.github.io',
+  cvPath: '/alessandro-albanesi-cv.pdf',
   shortName: 'Alessandro Albanesi',
   role: 'PhD Student — XR/AR and Computer Vision for Neurosurgery',
   affiliation:

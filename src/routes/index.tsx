@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge'
 import {
   Building2,
   ChevronRight,
+  Download,
   FileText,
   Github,
   GraduationCap,
@@ -103,6 +104,14 @@ function Home() {
           <p className="text-muted-foreground mb-1">{site.affiliation}</p>
           <p className="text-muted-foreground mb-5">{site.secondaryRole}</p>
           <SocialLinks className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm" />
+          <a
+            href={site.cvPath}
+            download
+            className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity"
+          >
+            <Download size={16} />
+            Download CV (PDF)
+          </a>
         </div>
       </section>
 
@@ -357,6 +366,14 @@ function Home() {
       {/* ---------------- CV ---------------- */}
       <section id="cv" className="pb-20">
         <SectionHeading>CV</SectionHeading>
+        <a
+          href={site.cvPath}
+          download
+          className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-lg border border-border text-sm font-medium hover:border-foreground/40 transition-colors"
+        >
+          <Download size={16} />
+          Download full CV (PDF)
+        </a>
         <h3 className="font-serif text-xl font-semibold mb-4">
           Working Experience
         </h3>

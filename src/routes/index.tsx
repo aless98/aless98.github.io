@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { marked } from 'marked'
 import { useMemo, useState } from 'react'
 import {
   allEducations,
@@ -466,6 +467,15 @@ function Home() {
                   </p>
                 )}
                 <p className="leading-relaxed mb-3">{job.summary}</p>
+                {job.content && (
+                  <div
+                    className="md-body text-muted-foreground mb-4"
+                    // Content is authored in this repo, not user input.
+                    dangerouslySetInnerHTML={{
+                      __html: marked(job.content) as string,
+                    }}
+                  />
+                )}
                 <div className="flex flex-wrap gap-2">
                   {job.tags.map((tag) => (
                     <Badge key={tag} variant="secondary">

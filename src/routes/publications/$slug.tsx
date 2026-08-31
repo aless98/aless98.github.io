@@ -77,7 +77,7 @@ function PublicationPage() {
           </header>
 
           <div
-            className="prose prose-gray max-w-none"
+            className="md-body"
             dangerouslySetInnerHTML={{ __html: html }}
           />
         </article>

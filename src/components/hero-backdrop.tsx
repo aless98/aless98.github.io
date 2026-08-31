@@ -20,7 +20,7 @@ import { useEffect, useRef } from 'react'
  *    page background.
  */
 
-const POINT_COUNT = 150
+const POINT_COUNT = 280
 /** Marker constellation: a rigid 5-point body, in arbitrary model units. */
 const MARKERS: Array<[number, number, number]> = [
   [0, 0, 0],
@@ -37,7 +37,7 @@ function makePoints(rand: () => number): Array<Point> {
     x: rand() * 2 - 1,
     y: rand() * 2 - 1,
     z: rand() * 2 - 1,
-    r: 0.6 + rand() * 1.1,
+    r: 0.7 + rand() * 1.4,
   }))
 }
 
@@ -91,9 +91,12 @@ export function HeroBackdrop() {
       const ry = p.y * 0.94 - rz * 0.34
       const depth = rz * 0.34 + p.y * 0.06
       const persp = 1 / (1.9 - depth * 0.55)
+      // Wide layouts put the photo and text on the left, so bias the cloud
+      // right into open space; narrow layouts are single-column, so centre it.
+      const centreX = width * (width > 900 ? 0.66 : 0.5)
       return {
-        sx: width / 2 + rx * scale * persp + pointer.x * 22,
-        sy: height / 2 + ry * scale * persp + pointer.y * 14,
+        sx: centreX + rx * scale * persp + pointer.x * 30,
+        sy: height / 2 + ry * scale * persp + pointer.y * 18,
         // 0 = far, 1 = near. Drives size and opacity for depth cueing.
         d: (depth + 1) / 2,
       }
@@ -109,23 +112,23 @@ export function HeroBackdrop() {
 
       ctx.clearRect(0, 0, width, height)
 
-      const scale = Math.min(width, height) * 0.42
-      const angle = t * 0.00006
+      const scale = Math.min(width * 0.34, height * 0.98)
+      const angle = t * 0.00009
 
       // --- point cloud ---
       const projected = points.map((p) => ({ p, ...project(p, angle, scale) }))
       for (const { p, sx, sy, d } of projected) {
         ctx.beginPath()
-        ctx.arc(sx, sy, p.r * (0.45 + d * 0.85), 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(${ink},${(0.05 + d * 0.16).toFixed(3)})`
+        ctx.arc(sx, sy, p.r * (0.6 + d * 1.35), 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(${ink},${(0.07 + d * 0.33).toFixed(3)})`
         ctx.fill()
       }
 
       // --- marker constellation, drawn as a rigid tracked body ---
       const markers = MARKERS.map(([x, y, z]) =>
-        project({ x, y, z }, angle, scale * 0.8),
+        project({ x, y, z }, angle, scale * 0.88),
       )
-      ctx.lineWidth = 1
+      ctx.lineWidth = 1.4
       for (let i = 0; i < markers.length; i++) {
         for (let j = i + 1; j < markers.length; j++) {
           const a = markers[i]
@@ -133,14 +136,14 @@ export function HeroBackdrop() {
           ctx.beginPath()
           ctx.moveTo(a.sx, a.sy)
           ctx.lineTo(b.sx, b.sy)
-          ctx.strokeStyle = `rgba(${accent},${(0.05 + ((a.d + b.d) / 2) * 0.13).toFixed(3)})`
+          ctx.strokeStyle = `rgba(${accent},${(0.12 + ((a.d + b.d) / 2) * 0.3).toFixed(3)})`
           ctx.stroke()
         }
       }
       for (const m of markers) {
         ctx.beginPath()
-        ctx.arc(m.sx, m.sy, 2.4 + m.d * 2.2, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(${accent},${(0.3 + m.d * 0.4).toFixed(3)})`
+        ctx.arc(m.sx, m.sy, 3.4 + m.d * 3.6, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(${accent},${(0.5 + m.d * 0.45).toFixed(3)})`
         ctx.fill()
       }
     }
@@ -196,9 +199,11 @@ export function HeroBackdrop() {
       className="pointer-events-none absolute inset-0 overflow-hidden select-none"
     >
       <canvas ref={canvasRef} className="w-full h-full" />
-      {/* Fades the motif out toward the text and the section below, so it never
-          fights the type for contrast. */}
+      {/* Fades the motif out toward the section below. */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
+      {/* On wide screens the text sits on the left, so scrim that side: the
+          motif stays bold in open space without ever competing with the type. */}
+      <div className="hidden md:block absolute inset-y-0 left-0 w-3/5 bg-gradient-to-r from-background via-background/85 to-transparent" />
     </div>
   )
 }

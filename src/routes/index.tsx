@@ -101,7 +101,7 @@ function Home() {
         <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-screen -z-10">
           <HeroBackdrop />
         </div>
-        <section className="relative flex flex-col md:flex-row items-start gap-10 pt-16 pb-20">
+        <section className="relative flex flex-col md:flex-row items-start gap-10 pt-20 pb-28 md:min-h-[32rem] md:items-center">
         <img
           src="/headshot-on-white.jpg"
           alt={`Portrait of ${site.name}`}

@@ -30,6 +30,9 @@ const MARKERS: Array<[number, number, number]> = [
   [-0.18, 0.66, 0.04],
 ]
 
+/** Matches Tailwind's `md`, where the hero switches to a two-column layout. */
+const WIDE_BREAKPOINT = 768
+
 type Point = { x: number; y: number; z: number; r: number }
 
 function makePoints(rand: () => number): Array<Point> {
@@ -93,7 +96,7 @@ export function HeroBackdrop() {
       const persp = 1 / (1.9 - depth * 0.55)
       // Wide layouts put the photo and text on the left, so bias the cloud
       // right into open space; narrow layouts are single-column, so centre it.
-      const centreX = width * (width > 900 ? 0.66 : 0.5)
+      const centreX = width * (width >= WIDE_BREAKPOINT ? 0.66 : 0.5)
       return {
         sx: centreX + rx * scale * persp + pointer.x * 30,
         sy: height / 2 + ry * scale * persp + pointer.y * 18,
@@ -112,7 +115,12 @@ export function HeroBackdrop() {
 
       ctx.clearRect(0, 0, width, height)
 
-      const scale = Math.min(width * 0.34, height * 0.98)
+      // Narrow layouts need a far larger fraction of the width: the cloud is
+      // centred and full-bleed there, not confined to a column beside the text.
+      const scale =
+        width >= WIDE_BREAKPOINT
+          ? Math.min(width * 0.34, height * 0.98)
+          : Math.min(width * 0.78, height * 0.46)
       const angle = t * 0.00009
 
       // --- point cloud ---
@@ -204,6 +212,9 @@ export function HeroBackdrop() {
       {/* On wide screens the text sits on the left, so scrim that side: the
           motif stays bold in open space without ever competing with the type. */}
       <div className="hidden md:block absolute inset-y-0 left-0 w-3/5 bg-gradient-to-r from-background via-background/85 to-transparent" />
+      {/* Single-column layouts put text over the middle of the motif, so calm
+          it evenly rather than on one side. */}
+      <div className="md:hidden absolute inset-0 bg-background/45" />
     </div>
   )
 }
